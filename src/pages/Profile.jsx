@@ -1,4 +1,10 @@
+import SignIn from "./SignIn";
+
 function Profile() {
-   return <div>Profile</div>;
+   return (
+      <div>
+         <SignIn />
+      </div>
+   );
 }
 export default Profile;
