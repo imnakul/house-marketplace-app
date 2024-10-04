@@ -2,6 +2,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ArrowRightIcon from "../assets/svg/keyboardArrowRightIcon.svg?react";
 import visibilityIcon from "../assets/svg/visibilityIcon.svg";
+import {
+   getAuth,
+   createUserWithEmailAndPassword,
+   updateProfile,
+} from "firebase/auth";
+import { db } from "../firebase.config";
 
 function SignUp() {
    const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +27,27 @@ function SignUp() {
       }));
    };
 
+   const onSubmit = async (e) => {
+      e.preventDefault();
+
+      try {
+         const auth = getAuth();
+
+         const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+         );
+
+         const user = userCredential.user;
+         updateProfile(auth.currentUser, { displayName: name });
+
+         navigate("/");
+      } catch (error) {
+         console.log("some error occurred");
+      }
+   };
+
    return (
       <>
          <div className='pageContainer'>
@@ -28,7 +55,7 @@ function SignUp() {
                <p className='pageHeader'>Welcome Back!</p>
             </header>
 
-            <form>
+            <form onSubmit={onSubmit}>
                <input
                   type='text'
                   className='nameInput'
@@ -57,27 +84,33 @@ function SignUp() {
                      onChange={onChange}
                   />
 
-                  {/* <img
+                  <img
                      src={visibilityIcon}
                      alt='show password'
                      onClick={() => setShowPassword((prevState) => !prevState)}
-                  /> */}
+                  />
                </div>
 
-               {/* <Link to='/forgot-password' className='forgotPasswordLink'>
+               <Link to='/forgot-password' className='forgotPasswordLink'>
                   Forgot Password
-               </Link> */}
+               </Link>
 
-               <div className='signInBar'>
-                  <p className='signInText'>Sign Up</p>
-
-                  <ArrowRightIcon fill='#ffffff' width='34px' height='34px' />
+               <div className='signUpBar'>
+                  <p className='signUpText'>Sign Up</p>
+                  <button className='signUpButton'>
+                     <ArrowRightIcon
+                        fill='#ffffff'
+                        width='34px'
+                        height='34px'
+                     />
+                  </button>
                </div>
             </form>
+
             {/* Google OAuth */}
 
             <Link to='/sign-in' className='registerLink'>
-               Sign In Instead{" "}
+               Sign In Instead
             </Link>
          </div>
       </>
