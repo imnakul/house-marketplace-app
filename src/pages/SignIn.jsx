@@ -60,8 +60,13 @@ function SignIn() {
 
                <div className='signInBar'>
                   <p className='signInText'>Sign In</p>
-
-                  <ArrowRightIcon fill='#ffffff' width='34px' height='34px' />
+                  <button className='signIUpButton'>
+                     <ArrowRightIcon
+                        fill='#ffffff'
+                        width='34px'
+                        height='34px'
+                     />
+                  </button>
                </div>
             </form>
             {/* Google OAuth */}
