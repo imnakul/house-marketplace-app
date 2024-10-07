@@ -1,8 +1,7 @@
-import SignIn from "./SignIn";
 import { getAuth, updateProfile } from "firebase/auth";
 import { updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase.config";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -11,7 +10,7 @@ function Profile() {
 
    const [changeDetails, setChangeDetails] = useState(false);
 
-   const [fromData, setFormData] = useState({
+   const [formData, setFormData] = useState({
       name: auth.currentUser.displayName,
       email: auth.currentUser.email,
    });
