@@ -96,6 +96,7 @@ function SignUp() {
                   <img
                      src={visibilityIcon}
                      alt='show password'
+                     className='showPassword'
                      onClick={() => setShowPassword((prevState) => !prevState)}
                   />
                </div>
