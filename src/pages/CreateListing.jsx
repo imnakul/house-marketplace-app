@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { useEffect, useRef } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db } from "../firebase.config";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
+import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
 
 function CreateListing() {
-   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
+   const [geolocationEnabled, setGeolocationEnabled] = useState(false);
    const [loading, setLoading] = useState(false);
    const [formData, setFormData] = useState({
       type: "rent",
@@ -61,8 +65,113 @@ function CreateListing() {
       //eslint-disable-next-line react-hooks/exhaustive-deps
    }, [isMounted]);
 
-   const onSubmit = (e) => {
+   const onSubmit = async (e) => {
       e.preventDefault();
+
+      setLoading(true);
+
+      if (discountedPrice >= regularPrice) {
+         setLoading(false);
+         toast.error("Discounted price needs to be less than regular price");
+         return;
+      }
+
+      if (images.length > 6) {
+         setLoading(false);
+         toast.error("Max 6 images Allowed!");
+      }
+
+      let geolocation = {};
+      let location;
+
+      geolocation.lat = latitude;
+      geolocation.lng = longitude;
+      location = address;
+      console.log(geolocation, location);
+
+      // if (geolocationEnabled) {
+      //    const response = await fetch(
+      //       `https://maps.googleapis.com/maps/api/geocode/json?address=${address}`
+      //    );
+
+      //    const data = await response.json();
+
+      //    console.log(data);
+
+      //    geolocation.lat = data.results[0]?.geometry.location.lat ?? 0;
+      //    geolocation.lng = data.results[0]?.geometry.location.lng ?? 0;
+
+      //    location =
+      //       data.status === "ZERO_RESULTS"
+      //          ? undefined
+      //          : data.results[0]?.formatted_address;
+
+      //    if (location === undefined || location.includes("undefined")) {
+      //       setLoading(false);
+      //       toast.error("Please enter a valid address");
+      //       return;
+      //    }
+      // } else {
+      //    geolocation.lat = latitude;
+      //    geolocation.lng = longitude;
+      //    location = address;
+      // }
+
+      //Store Images in firebase
+      const storeImage = async (image) => {
+         return new Promise((resolve, reject) => {
+            const storage = getStorage();
+            const fileName = `${auth.currentUser.uid}-${
+               image.name
+            }-${uuidv4()}`;
+
+            const storageRef = ref(storage, "images/" + fileName);
+
+            const uploadTask = uploadBytesResumable(storageRef, image);
+
+            uploadTask.on(
+               "state_changed",
+               (snapshot) => {
+                  const progress =
+                     (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  console.log("Upload is " + progress + "% done");
+                  switch (snapshot.state) {
+                     case "paused":
+                        console.log("Upload is paused");
+                        break;
+                     case "running":
+                        console.log("Upload is running");
+                        break;
+                     default:
+                        break;
+                  }
+               },
+               (error) => {
+                  reject(error);
+               },
+               () => {
+                  //Handle successfull uploads on complete
+                  //for Instance, get the download URL:
+                  getDownloadURL(uploadTask.snapshot.ref).then(
+                     (downloadURL) => {
+                        resolve(downloadURL);
+                     }
+                  );
+               }
+            );
+         });
+      };
+
+      const imgUrls = await Promise.all(
+         [...images].map((image) => storeImage(image))
+      ).catch(() => {
+         setLoading(false);
+         toast.error("Images not uploaded");
+         return;
+      });
+
+      console.log(imgUrls);
+      setLoading(false);
    };
 
    const onMutate = (e) => {
