@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 function CreateListing() {
    const [geolocationEnabled, setGeolocationEnabled] = useState(false);
@@ -175,8 +176,23 @@ function CreateListing() {
          return;
       });
 
-      console.log(imgUrls);
+      // object which we are going to submit, to db
+      const formDataCopy = {
+         ...formData,
+         imgUrls,
+         geolocation,
+         timestamp: serverTimestamp(),
+      };
+
+      formDataCopy.location = address;
+      delete formDataCopy.images;
+      delete formDataCopy.address;
+      !formDataCopy.offer && delete formDataCopy.discountedPrice;
+
+      const docRef = await addDoc(collection(db, "listings"), formDataCopy);
       setLoading(false);
+      toast.success("Listing Saved");
+      navigate(`/category/${formDataCopy.type}/${docRef.id}`);
    };
 
    const onMutate = (e) => {
