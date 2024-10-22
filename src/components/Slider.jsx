@@ -38,6 +38,11 @@ function Slider() {
    if (loading) {
       return <Spinner />;
    }
+
+   if (listings.length === 0) {
+      return <></>;
+   }
+
    return (
       listings && (
          <>
