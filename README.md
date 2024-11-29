@@ -1,8 +1,10 @@
-# React + Vite
+House MarketPlace Webapp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Watch it Live at ![LiveSite](https://house-marketplace-app-kohl.vercel.app/)  
 
-Currently, two official plugins are available:
+![Product Presentationwe](https://github.com/user-attachments/assets/ba516a36-852d-4230-b11d-3abd4991f914)  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![2](https://github.com/user-attachments/assets/3c0c1b39-94a4-4f8b-ba4e-3fb5ca6b12e0)  
+
+![3](https://github.com/user-attachments/assets/4020bb8b-caf0-4c7c-9de5-5b5982ba9ec0)  
+
